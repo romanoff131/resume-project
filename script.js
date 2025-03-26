@@ -38,14 +38,13 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    // ======= Кнопка скачивания PDF =======
-// Кнопка скачивания PDF
+   // Кнопка скачивания PDF
 document.getElementById("download-pdf").addEventListener("click", async function () {
     const { jsPDF } = window.jspdf;
     let doc = new jsPDF();
 
-    // Загрузка шрифта с поддержкой кириллицы
-    const fontUrl = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/fonts/Roboto-Regular.ttf";
+    // Загружаем кастомный шрифт с поддержкой кириллицы
+    const fontUrl = "https://raw.githubusercontent.com/aursoft/fontRoboto/main/Roboto-Regular.ttf";
     const font = await fetch(fontUrl).then(res => res.arrayBuffer());
 
     // Встраивание шрифта в jsPDF
