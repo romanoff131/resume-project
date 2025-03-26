@@ -27,11 +27,13 @@ body {
     position: relative;
 }
 
-/* Пустой псевдоэлемент для подсказки */
-[contenteditable="true"]:empty:before {
+/* Подсказки для contenteditable */
+[contenteditable][data-placeholder]:empty:before {
     content: attr(data-placeholder);
     color: gray;
     font-style: italic;
+    pointer-events: none;
+    display: block;
 }
 
 /* При фокусе фон выделяется */
