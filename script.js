@@ -38,9 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
         let doc = new jsPDF();
     
         try {
-            // Загружаем кириллический шрифт "Roboto"
-            let response = await fetch("https://cdn.jsdelivr.net/gh/diegodorado/jsPDF-Cyrillic-Roboto/Roboto-Regular.ttf");
-            let fontData = await response.arrayBuffer();
+            // Загружаем шрифт "Roboto" в Base64
+            let response = await fetch("https://cdn.jsdelivr.net/gh/diegodorado/jsPDF-Cyrillic-Roboto/Roboto-Regular.base64.txt");
+            let fontData = await response.text(); // Получаем Base64 строку
     
             // Добавляем загруженный шрифт в jsPDF
             doc.addFileToVFS("Roboto-Regular.ttf", fontData);
@@ -49,12 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
     
             let y = 10;
             
-            // Добавляем в PDF заголовок (например, "Резюме")
+            // Добавляем заголовок "Резюме"
             doc.setFontSize(18);
             doc.text("Резюме", 10, y);
             y += 10;
-            
-            // Вывод всех текстовых элементов в PDF
+    
+            // Берем все блоки с текстом и записываем их в PDF
             document.querySelectorAll("h1, h2, p, li").forEach(element => {
                 let text = element.innerText.trim();
                 if (text !== "") {
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Скачивание PDF
             doc.save("resume.pdf");
         } catch (error) {
-            console.error("Ошибка загрузки шрифта или сохранения PDF-файла:", error);
+            console.error("Ошибка загрузки шрифта или генерации PDF:", error);
         }
     });
 
