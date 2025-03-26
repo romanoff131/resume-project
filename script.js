@@ -33,30 +33,42 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
     // Кнопка скачивания PDF
-    document.getElementById("download-pdf").addEventListener("click", function () {
+    document.getElementById("download-pdf").addEventListener("click", async function () {
         const { jsPDF } = window.jspdf;
         let doc = new jsPDF();
     
-        // Загружаем кириллический шрифт "Roboto"
-        fetch("https://cdn.jsdelivr.net/gh/diegodorado/jsPDF-Cyrillic-Roboto/Roboto-Regular.ttf")
-            .then(response => response.arrayBuffer())
-            .then(fontData => {
-                doc.addFileToVFS("Roboto-Regular.ttf", fontData);
-                doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
-                doc.setFont("Roboto");
+        try {
+            // Загружаем кириллический шрифт "Roboto"
+            let response = await fetch("https://cdn.jsdelivr.net/gh/diegodorado/jsPDF-Cyrillic-Roboto/Roboto-Regular.ttf");
+            let fontData = await response.arrayBuffer();
     
-                let y = 10;
-                document.querySelectorAll("h1, h2, p, li").forEach(element => {
-                    let text = element.innerText.trim();
-                    if (text !== "") {
-                        doc.text(text, 10, y, { maxWidth: 180 });
-                        y += 10;
-                    }
-                });
+            // Добавляем загруженный шрифт в jsPDF
+            doc.addFileToVFS("Roboto-Regular.ttf", fontData);
+            doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+            doc.setFont("Roboto");
     
-                doc.save("resume.pdf");
-            })
-            .catch(error => console.error("Ошибка загрузки шрифта", error));
+            let y = 10;
+            
+            // Добавляем в PDF заголовок (например, "Резюме")
+            doc.setFontSize(18);
+            doc.text("Резюме", 10, y);
+            y += 10;
+            
+            // Вывод всех текстовых элементов в PDF
+            document.querySelectorAll("h1, h2, p, li").forEach(element => {
+                let text = element.innerText.trim();
+                if (text !== "") {
+                    doc.setFontSize(element.tagName === "H1" ? 16 : 12);
+                    doc.text(text, 10, y, { maxWidth: 180 });
+                    y += 10;
+                }
+            });
+    
+            // Скачивание PDF
+            doc.save("resume.pdf");
+        } catch (error) {
+            console.error("Ошибка загрузки шрифта или сохранения PDF-файла:", error);
+        }
     });
 
     // Эффект Material Wave
