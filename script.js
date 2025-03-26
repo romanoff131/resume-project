@@ -39,26 +39,69 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
    // Кнопка скачивания PDF
-document.getElementById("download-pdf").addEventListener("click", async function () {
-    const { jsPDF } = window.jspdf;
-    let doc = new jsPDF();
+   document.getElementById("download-pdf")?.addEventListener("click", async function () {
+    try {
+        const { jsPDF } = window.jspdf;
+        let doc = new jsPDF();
+        
+        // Загрузка шрифта
+        const fontUrl = "https://raw.githubusercontent.com/aursoft/fontRoboto/main/Roboto-Regular.ttf";
+        const fontResponse = await fetch(fontUrl);
+        const font = await fontResponse.arrayBuffer();
+        
+        doc.addFileToVFS("Roboto-Regular.ttf", font);
+        doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+        doc.setFont("Roboto");
 
-    // Загружаем кастомный шрифт с поддержкой кириллицы
-    const fontUrl = "https://raw.githubusercontent.com/aursoft/fontRoboto/main/Roboto-Regular.ttf";
-    const font = await fetch(fontUrl).then(res => res.arrayBuffer());
+        let y = 20;
+        const lineHeight = 10;
+        const pageWidth = doc.internal.pageSize.width - 20;
 
-    // Встраивание шрифта в jsPDF
-    doc.addFileToVFS("Roboto-Regular.ttf", font);
-    doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
-    doc.setFont("Roboto");
+        const elements = document.querySelectorAll("h1, h2, p, li");
+        
+        for (const element of elements) {
+            // Определение стилей
+            let fontSize = 12;
+            let isBold = false;
+            
+            switch(element.tagName) {
+                case 'H1':
+                    fontSize = 22;
+                    isBold = true;
+                    break;
+                case 'H2':
+                    fontSize = 18;
+                    isBold = true;
+                    break;
+                case 'LI':
+                    doc.text('- ', 10, y);
+                    break;
+            }
 
-    let y = 10;
-    document.querySelectorAll("h1, h2, p, li").forEach(element => {
-        doc.text(element.innerText, 10, y);
-        y += 10;
-    });
+            // Настройка шрифта
+            doc.setFontSize(fontSize);
+            doc.setFont("Roboto", isBold ? 'bold' : 'normal');
 
-    doc.save("resume.pdf");
+            // Обработка текста
+            const text = element.innerText;
+            const lines = doc.splitTextToSize(text, pageWidth);
+            
+            // Добавление текста
+            for (const line of lines) {
+                if (y > doc.internal.pageSize.height - 20) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(line, element.tagName === 'LI' ? 15 : 10, y);
+                y += lineHeight;
+            }
+            y += lineHeight * 0.5; // Межблочный интервал
+        }
+
+        doc.save("resume.pdf");
+    } catch (error) {
+        console.error('Ошибка генерации PDF:', error);
+    }
 });
 
     // ======= Эффект Material Wave для всех кнопок =======
