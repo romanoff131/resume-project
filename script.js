@@ -27,11 +27,14 @@ document.addEventListener("DOMContentLoaded", function () {
             
             const { jsPDF } = window.jspdf;
             let doc = new jsPDF();
-            const fontUrl = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/fonts/Roboto-Regular.ttf";
-            const font = await fetch(fontUrl).then(res => res.arrayBuffer());
-            
-            doc.addFileToVFS("Roboto-Regular.ttf", font);
-            doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+    
+            // Добавляем шрифт с явным указанием метрик
+            doc.addFont(
+                "https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/fonts/Roboto/roboto-regular-webfont.woff",
+                "Roboto",
+                "normal",
+                "Identity-H"
+            );
             doc.setFont("Roboto");
 
             let y = 20;
@@ -69,12 +72,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             doc.save("resume.pdf");
-        } catch (error) {
+        } 
+        catch (error) {
             alert("Ошибка: " + error.message);
             console.error(error);
         }
     });
-
+    
     // ======= Эффект Ripple =======
     document.querySelectorAll("button").forEach(button => {
         button.addEventListener("click", function (e) {
