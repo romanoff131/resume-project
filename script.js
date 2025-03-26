@@ -1,123 +1,92 @@
-// Проверяем, когда DOM загрузится
 document.addEventListener("DOMContentLoaded", function () {
-    // ======= Работа с contenteditable и localStorage =======
+    // ======= Редактируемые элементы =======
     const editableElements = document.querySelectorAll("[contenteditable='true']");
 
     function updatePlaceholder(element) {
-        if (element.textContent.trim() === "") {
-            element.classList.add("empty");
-        } else {
-            element.classList.remove("empty");
-        }
+        element.classList.toggle("empty", element.textContent.trim() === "");
     }
 
     editableElements.forEach(element => {
-        if (!element.dataset.placeholder) return; // Предотвращаем ошибку при отсутствии data-placeholder
+        if (!element.dataset.placeholder) return;
         const key = element.dataset.placeholder;
-        const savedContent = localStorage.getItem(key);
-
-        if (savedContent) {
-            element.innerText = savedContent;
-        }
-
+        element.textContent = localStorage.getItem(key) || "";
         updatePlaceholder(element);
 
-        element.addEventListener("input", function () {
-            localStorage.setItem(key, element.innerText);
+        element.addEventListener("input", () => {
+            localStorage.setItem(key, element.textContent);
             updatePlaceholder(element);
         });
 
-        element.addEventListener("blur", function () {
-            updatePlaceholder(element);
-        });
+        element.addEventListener("blur", () => updatePlaceholder(element));
     });
 
-    // ======= Проверяем, загружена ли jsPDF =======
-    if (!window.jspdf) {
-        console.error("Ошибка: библиотека jsPDF не загружена.");
-        return;
-    }
-
-   // Кнопка скачивания PDF
-   document.getElementById("download-pdf")?.addEventListener("click", async function () {
-    try {
-        const { jsPDF } = window.jspdf;
-        let doc = new jsPDF();
-        
-        // Загрузка шрифта
-        const fontUrl = "https://raw.githubusercontent.com/aursoft/fontRoboto/main/Roboto-Regular.ttf";
-        const fontResponse = await fetch(fontUrl);
-        const font = await fontResponse.arrayBuffer();
-        
-        doc.addFileToVFS("Roboto-Regular.ttf", font);
-        doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
-        doc.setFont("Roboto");
-
-        let y = 20;
-        const lineHeight = 10;
-        const pageWidth = doc.internal.pageSize.width - 20;
-
-        const elements = document.querySelectorAll("h1, h2, p, li");
-        
-        for (const element of elements) {
-            // Определение стилей
-            let fontSize = 12;
-            let isBold = false;
+    // ======= Генерация PDF =======
+    document.getElementById("download-pdf").addEventListener("click", async function () {
+        try {
+            if (!window.jspdf) throw new Error("Библиотека jsPDF не загружена");
             
-            switch(element.tagName) {
-                case 'H1':
-                    fontSize = 22;
-                    isBold = true;
-                    break;
-                case 'H2':
-                    fontSize = 18;
-                    isBold = true;
-                    break;
-                case 'LI':
-                    doc.text('- ', 10, y);
-                    break;
-            }
-
-            // Настройка шрифта
-            doc.setFontSize(fontSize);
-            doc.setFont("Roboto", isBold ? 'bold' : 'normal');
-
-            // Обработка текста
-            const text = element.innerText;
-            const lines = doc.splitTextToSize(text, pageWidth);
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            const fontUrl = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/fonts/Roboto-Regular.ttf";
+            const font = await fetch(fontUrl).then(res => res.arrayBuffer());
             
-            // Добавление текста
-            for (const line of lines) {
-                if (y > doc.internal.pageSize.height - 20) {
-                    doc.addPage();
-                    y = 20;
+            doc.addFileToVFS("Roboto-Regular.ttf", font);
+            doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+            doc.setFont("Roboto");
+
+            let y = 20;
+            const elements = document.querySelectorAll("h1, h2, p, li");
+            
+            for (const element of elements) {
+                let fontSize = 12;
+                let isBold = false;
+                
+                switch(element.tagName) {
+                    case 'H1':
+                        fontSize = 22;
+                        isBold = true;
+                        break;
+                    case 'H2':
+                        fontSize = 18;
+                        isBold = true;
+                        break;
                 }
-                doc.text(line, element.tagName === 'LI' ? 15 : 10, y);
-                y += lineHeight;
+
+                doc.setFontSize(fontSize);
+                doc.setFont("Roboto", isBold ? "bold" : "normal");
+                const text = element.tagName === 'LI' ? `• ${element.textContent}` : element.textContent;
+                const lines = doc.splitTextToSize(text, 180);
+                
+                for (const line of lines) {
+                    if (y > 280) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    doc.text(line, 15, y);
+                    y += 10;
+                }
+                y += 5;
             }
-            y += lineHeight * 0.5; // Межблочный интервал
+
+            doc.save("resume.pdf");
+        } catch (error) {
+            alert("Ошибка: " + error.message);
+            console.error(error);
         }
+    });
 
-        doc.save("resume.pdf");
-    } catch (error) {
-        console.error('Ошибка генерации PDF:', error);
-    }
-});
-
-    // ======= Эффект Material Wave для всех кнопок =======
+    // ======= Эффект Ripple =======
     document.querySelectorAll("button").forEach(button => {
         button.addEventListener("click", function (e) {
-            let ripple = document.createElement("span");
-            ripple.classList.add("ripple");
+            const ripple = document.createElement("div");
+            ripple.className = "ripple";
+            
+            const rect = button.getBoundingClientRect();
+            ripple.style.left = `${e.clientX - rect.left}px`;
+            ripple.style.top = `${e.clientY - rect.top}px`;
+            
             this.appendChild(ripple);
-
-            let x = e.clientX - this.getBoundingClientRect().left;
-            let y = e.clientY - this.getBoundingClientRect().top;
-
-            ripple.style.left = `${x}px`;
-            ripple.style.top = `${y}px`;
-
-            setTimeout(() => ripple.remove(), 500);
+            setTimeout(() => ripple.remove(), 600);
         });
     });
 });
