@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         element.addEventListener("blur", () => updatePlaceholder(element));
     });
 
-    // ======= Подключение Noto Sans Regular =======
+    // ======= Подключение шрифта Noto Sans для полной поддержки Unicode =======
     async function loadFont() {
-        const response = await fetch("https://cdnjs.cloudflare.com/ajax/libs/fontsource-noto-sans/4.5.4/files/noto-sans-latin-cyrillic-regular.ttf");
+        const response = await fetch("https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts/unhinted/NotoSans-Regular.ttf");
         const fontData = await response.arrayBuffer();
         return btoa(String.fromCharCode(...new Uint8Array(fontData)));
     }
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 format: "a4"
             });
 
-            // Добавляем Noto Sans
+            // Добавляем шрифт Noto Sans
             doc.addFileToVFS("NotoSans-Regular.ttf", fontBase64);
             doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
             doc.setFont("NotoSans");
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     });
 
-    // ======= Эффект Ripple =======
+    // ======= Эффект Ripples =======
     document.querySelectorAll("button").forEach(button => {
         button.addEventListener("click", function (e) {
             const ripple = document.createElement("div");
