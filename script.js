@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // ======= Загрузка шрифта для GitHub Pages =======
     const repoName = "resume-project"; // Укажи точное имя репозитория
-    const fontPath = `https://romanoff131.github.io/${repoName}/static/NotoSans-VariableFont_wdth,wght.ttf`;
+    const fontPath = `https://romanoff131.github.io/${repoName}/NotoSans-VariableFont_wdth,wght.ttf`;
     
     async function loadFont() {
         const response = await fetch(fontPath); // Абсолютный GitHub Pages путь
