@@ -20,8 +20,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     // ======= Загрузка шрифта для GitHub Pages =======
+    const repoName = "resume-project"; // Укажи точное имя репозитория
+    const fontPath = `https://romanoff131.github.io/${repoName}/static/NotoSans-VariableFont_wdth,wght.ttf`;
+    
     async function loadFont() {
-        const response = await fetch("static/NotoSans-VariableFont_wdth,wght.ttf"); // Путь к шрифту
+        const response = await fetch(fontPath); // Абсолютный GitHub Pages путь
         if (!response.ok) throw new Error("Ошибка загрузки шрифта");
         const fontData = await response.arrayBuffer();
         return btoa(String.fromCharCode(...new Uint8Array(fontData)));
