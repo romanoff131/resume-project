@@ -24,13 +24,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     const fontPath = `https://romanoff131.github.io/${repoName}/NotoSans-VariableFont_wdth,wght.ttf`;
     
     async function loadFont() {
-        const response = await fetch(fontPath); 
+        const response = await fetch(fontPath);
         if (!response.ok) throw new Error("Ошибка загрузки шрифта");
         const fontData = await response.arrayBuffer();
-
-        // Используем TextDecoder вместо метода с переполнением стека
-        const binary = new TextDecoder("latin1").decode(new Uint8Array(fontData));
-
+        
+        // Преобразуем ArrayBuffer в строку безопасным способом
+        let binary = '';
+        const bytes = new Uint8Array(fontData);
+        const chunkSize = 8192; // Разбиваем большие массивы на куски
+    
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+            binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+        }
+    
         return btoa(binary);
     }
 
