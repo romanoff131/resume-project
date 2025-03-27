@@ -26,38 +26,49 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!window.jspdf) throw new Error("Библиотека jsPDF не загружена");
             
             const { jsPDF } = window.jspdf;
-            let doc = new jsPDF();
-    
-            // Добавляем шрифт с явным указанием метрик
-            doc.addFont(
-                "https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/fonts/Roboto/roboto-regular-webfont.woff",
+            let doc = new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
+                format: "a4"
+            });
+
+            // Добавление шрифта с явным указанием кодировки
+            await doc.addFont(
+                "https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2",
                 "Roboto",
                 "normal",
                 "Identity-H"
             );
+            
             doc.setFont("Roboto");
+            doc.setFontSize(12);
 
             let y = 20;
             const elements = document.querySelectorAll("h1, h2, p, li");
             
             for (const element of elements) {
+                // Определение стилей
                 let fontSize = 12;
-                let isBold = false;
+                let fontStyle = "normal";
                 
-                switch(element.tagName) {
-                    case 'H1':
-                        fontSize = 22;
-                        isBold = true;
-                        break;
-                    case 'H2':
-                        fontSize = 18;
-                        isBold = true;
-                        break;
+                if (element.tagName === 'H1') {
+                    fontSize = 22;
+                    fontStyle = "bold";
+                } else if (element.tagName === 'H2') {
+                    fontSize = 18;
+                    fontStyle = "bold";
                 }
 
+                // Установка стилей
                 doc.setFontSize(fontSize);
-                doc.setFont("Roboto", isBold ? "bold" : "normal");
-                const text = element.tagName === 'LI' ? `• ${element.textContent}` : element.textContent;
+                doc.setFont("Roboto", fontStyle);
+
+                // Форматирование текста
+                const text = element.tagName === 'LI' 
+                    ? `• ${element.textContent}` 
+                    : element.textContent;
+
+                // Разбивка текста на строки
                 const lines = doc.splitTextToSize(text, 180);
                 
                 for (const line of lines) {
@@ -68,17 +79,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     doc.text(line, 15, y);
                     y += 10;
                 }
-                y += 5;
+                y += 5; // Межблочный интервал
             }
 
             doc.save("resume.pdf");
-        } 
-        catch (error) {
-            alert("Ошибка: " + error.message);
-            console.error(error);
+        } catch (error) {
+            alert("Ошибка генерации: " + error.message);
+            console.error("Ошибка PDF:", error);
         }
     });
-    
+
     // ======= Эффект Ripple =======
     document.querySelectorAll("button").forEach(button => {
         button.addEventListener("click", function (e) {
