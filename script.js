@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // ======= Редактируемые элементы =======
     const editableElements = document.querySelectorAll("[contenteditable='true']");
 
     function updatePlaceholder(element) {
@@ -24,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("download-pdf").addEventListener("click", async function () {
         try {
             if (!window.jspdf) throw new Error("Библиотека jsPDF не загружена");
-            
+
             const { jsPDF } = window.jspdf;
             let doc = new jsPDF({
                 orientation: "portrait",
@@ -32,25 +31,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 format: "a4"
             });
 
-            // Добавление шрифта с явным указанием кодировки
-            await doc.addFont(
-                "https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2",
-                "Roboto",
-                "normal",
-                "Identity-H"
-            );
-            
-            doc.setFont("Roboto");
+            // Использование стандартного шрифта
+            doc.setFont("helvetica", "normal");
             doc.setFontSize(12);
 
             let y = 20;
             const elements = document.querySelectorAll("h1, h2, p, li");
-            
+
             for (const element of elements) {
-                // Определение стилей
                 let fontSize = 12;
                 let fontStyle = "normal";
-                
+
                 if (element.tagName === 'H1') {
                     fontSize = 22;
                     fontStyle = "bold";
@@ -59,46 +50,43 @@ document.addEventListener("DOMContentLoaded", function () {
                     fontStyle = "bold";
                 }
 
-                // Установка стилей
+                doc.setFont("helvetica", fontStyle);
                 doc.setFontSize(fontSize);
-                doc.setFont("Roboto", fontStyle);
 
-               // Форматирование текста
-               const text = element.tagName === 'LI' 
-               ? `• ${element.textContent}` 
-               : element.textContent;
+                const text = element.tagName === 'LI' 
+                    ? `• ${element.textContent}` 
+                    : element.textContent;
 
-           // Разбивка текста на строки
-           const lines = doc.splitTextToSize(text, 180);
-           
-           for (const line of lines) {
-               if (y > 280) {
-                   doc.addPage();
-                   y = 20;
-               }
-               doc.text(line, 15, y);
-               y += 10;
-           }
-           y += 5; // Межблочный интервал
-       }
+                const lines = doc.splitTextToSize(text, 180);
 
-       doc.save("resume.pdf");
-   } catch (error) {
-       alert("Ошибка генерации: " + error.message);
-       console.error("Ошибка PDF:", error);
-   }
-});
+                for (const line of lines) {
+                    if (y > 280) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    doc.text(line, 15, y);
+                    y += 10;
+                }
+                y += 5;
+            }
+
+            doc.save("resume.pdf");
+        } catch (error) {
+            alert("Ошибка генерации: " + error.message);
+            console.error("Ошибка PDF:", error);
+        }
+    });
 
     // ======= Эффект Ripple =======
     document.querySelectorAll("button").forEach(button => {
         button.addEventListener("click", function (e) {
             const ripple = document.createElement("div");
             ripple.className = "ripple";
-            
+
             const rect = button.getBoundingClientRect();
             ripple.style.left = `${e.clientX - rect.left}px`;
             ripple.style.top = `${e.clientY - rect.top}px`;
-            
+
             this.appendChild(ripple);
             setTimeout(() => ripple.remove(), 600);
         });
