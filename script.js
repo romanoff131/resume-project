@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             if (!window.jspdf) throw new Error("Библиотека jsPDF не загружена");
 
+            // Подключение библиотеки jsPDF
             const { jsPDF } = window.jspdf;
             let doc = new jsPDF({
                 orientation: "portrait",
@@ -31,8 +32,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 format: "a4"
             });
 
-            // Использование стандартного шрифта
-            doc.setFont("helvetica", "normal");
+            // ===== Добавление шрифта с поддержкой русского =====
+            doc.addFileToVFS("Roboto-Regular.ttf", "base64-данные-тут"); // Замените base64 на реальный код
+            doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
+            doc.setFont("Roboto");
+
             doc.setFontSize(12);
 
             let y = 20;
@@ -50,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     fontStyle = "bold";
                 }
 
-                doc.setFont("helvetica", fontStyle);
+                doc.setFont("Roboto", fontStyle);
                 doc.setFontSize(fontSize);
 
                 const text = element.tagName === 'LI' 
