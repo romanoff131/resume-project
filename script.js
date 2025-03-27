@@ -24,13 +24,22 @@ document.addEventListener("DOMContentLoaded", async function () {
     const fontPath = `https://romanoff131.github.io/${repoName}/NotoSans-VariableFont_wdth,wght.ttf`;
     
     async function loadFont() {
-        const response = await fetch(fontPath); // Абсолютный GitHub Pages путь
+        const response = await fetch(fontPath); 
         if (!response.ok) throw new Error("Ошибка загрузки шрифта");
         const fontData = await response.arrayBuffer();
-        return btoa(String.fromCharCode(...new Uint8Array(fontData)));
+
+        // Используем TextDecoder вместо метода с переполнением стека
+        const binary = new TextDecoder("latin1").decode(new Uint8Array(fontData));
+
+        return btoa(binary);
     }
 
-    const fontBase64 = await loadFont();
+    try {
+        var fontBase64 = await loadFont();
+    } catch (error) {
+        console.error("Не удалось загрузить шрифт:", error);
+        fontBase64 = ""; // Предотвращаем ошибку при использовании шрифта в PDF
+    }
 
     // ======= Генерация PDF =======
     document.getElementById("download-pdf").addEventListener("click", function () {
@@ -44,10 +53,13 @@ document.addEventListener("DOMContentLoaded", async function () {
                 format: "a4"
             });
 
-            // Подключаем Noto Sans
-            doc.addFileToVFS("NotoSans-Regular.ttf", fontBase64);
-            doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
-            doc.setFont("NotoSans");
+            // Подключаем Noto Sans, если шрифт был успешно загружен
+            if (fontBase64) {
+                doc.addFileToVFS("NotoSans-Regular.ttf", fontBase64);
+                doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
+                doc.setFont("NotoSans");
+            }
+
             doc.setFontSize(12);
 
             let y = 20;
