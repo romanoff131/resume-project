@@ -63,31 +63,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 doc.setFontSize(fontSize);
                 doc.setFont("Roboto", fontStyle);
 
-                // Форматирование текста
-                const text = element.tagName === 'LI' 
-                    ? `• ${element.textContent}` 
-                    : element.textContent;
+               // Форматирование текста
+               const text = element.tagName === 'LI' 
+               ? `• ${element.textContent}` 
+               : element.textContent;
 
-                // Разбивка текста на строки
-                const lines = doc.splitTextToSize(text, 180);
-                
-                for (const line of lines) {
-                    if (y > 280) {
-                        doc.addPage();
-                        y = 20;
-                    }
-                    doc.text(line, 15, y);
-                    y += 10;
-                }
-                y += 5; // Межблочный интервал
-            }
+           // Разбивка текста на строки
+           const lines = doc.splitTextToSize(text, 180);
+           
+           for (const line of lines) {
+               if (y > 280) {
+                   doc.addPage();
+                   y = 20;
+               }
+               doc.text(line, 15, y);
+               y += 10;
+           }
+           y += 5; // Межблочный интервал
+       }
 
-            doc.save("resume.pdf");
-        } catch (error) {
-            alert("Ошибка генерации: " + error.message);
-            console.error("Ошибка PDF:", error);
-        }
-    });
+       doc.save("resume.pdf");
+   } catch (error) {
+       alert("Ошибка генерации: " + error.message);
+       console.error("Ошибка PDF:", error);
+   }
+});
 
     // ======= Эффект Ripple =======
     document.querySelectorAll("button").forEach(button => {
