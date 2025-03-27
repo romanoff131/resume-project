@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const editableElements = document.querySelectorAll("[contenteditable='true']");
 
     function updatePlaceholder(element) {
@@ -19,12 +19,20 @@ document.addEventListener("DOMContentLoaded", function () {
         element.addEventListener("blur", () => updatePlaceholder(element));
     });
 
+    // ======= Подключение Noto Sans Regular =======
+    async function loadFont() {
+        const response = await fetch("https://cdnjs.cloudflare.com/ajax/libs/fontsource-noto-sans/4.5.4/files/noto-sans-latin-cyrillic-regular.ttf");
+        const fontData = await response.arrayBuffer();
+        return btoa(String.fromCharCode(...new Uint8Array(fontData)));
+    }
+
+    const fontBase64 = await loadFont();
+
     // ======= Генерация PDF =======
-    document.getElementById("download-pdf").addEventListener("click", async function () {
+    document.getElementById("download-pdf").addEventListener("click", function () {
         try {
             if (!window.jspdf) throw new Error("Библиотека jsPDF не загружена");
 
-            // Подключение библиотеки jsPDF
             const { jsPDF } = window.jspdf;
             let doc = new jsPDF({
                 orientation: "portrait",
@@ -32,11 +40,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 format: "a4"
             });
 
-            // ===== Добавление шрифта с поддержкой русского =====
-            doc.addFileToVFS("Roboto-Regular.ttf", "base64-данные-тут"); // Замените base64 на реальный код
-            doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
-            doc.setFont("Roboto");
-
+            // Добавляем Noto Sans
+            doc.addFileToVFS("NotoSans-Regular.ttf", fontBase64);
+            doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
+            doc.setFont("NotoSans");
             doc.setFontSize(12);
 
             let y = 20;
@@ -54,8 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     fontStyle = "bold";
                 }
 
-                doc.setFont("Roboto", fontStyle);
                 doc.setFontSize(fontSize);
+                doc.setFont("NotoSans", fontStyle);
 
                 const text = element.tagName === 'LI' 
                     ? `• ${element.textContent}` 
