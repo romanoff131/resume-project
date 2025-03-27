@@ -1,26 +1,84 @@
+/* Основные параметры страницы */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f4f4f4;
+    background-color: #f0f2f5;
     display: flex;
     justify-content: center;
+    align-items: center;
     min-height: 100vh;
 }
 
+/* Контейнер */
 .container {
-    max-width: 600px;
+    max-width: 700px;
     width: 100%;
-    background: white;
-    padding: 20px;
+    background: #ffffff;
+    padding: 25px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Заголовки */
+h1 {
+    margin-bottom: 5px;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+}
+
+h2 {
+    font-size: 20px;
+    border-bottom: 3px solid #007bff;
+    display: inline-block;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+}
+
+/* Главный блок резюме */
+.resume-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.description {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Контентные секции */
+.resume-section {
+    margin-bottom: 20px;
+}
+
+/* Контактные данные */
+p {
+    background-color: #f9f9f9;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+/* Улучшенный стиль списка */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    background: #e9f5ff;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+/* Интерактивное редактирование текста */
 [contenteditable="true"] {
     padding: 4px;
     transition: background-color 0.2s ease-in-out;
-    position: relative;
+    border-radius: 5px;
+    border-bottom: 2px solid transparent;
     min-height: 1em;
 }
 
@@ -31,30 +89,40 @@ body {
     pointer-events: none;
 }
 
+/* При редактировании */
 [contenteditable="true"]:focus {
-    background-color: #e0f7fa;
+    background-color: #eef9ff;
+    border-bottom: 2px solid #007bff;
     outline: none;
 }
 
+/* Стилизация кнопки */
 button {
     display: block;
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-top: 20px;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    transition: background-color 0.2s;
 }
 
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Эффект нажатия */
 .ripple {
     position: absolute;
     background: rgba(255, 255, 255, 0.4);
     transform: translate(-50%, -50%);
+    border-radius: 50%;
     pointer-events: none;
     animation: rippleEffect 0.6s linear;
 }
@@ -69,5 +137,24 @@ button {
         width: 200px;
         height: 200px;
         opacity: 0;
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    h2 {
+        font-size: 18px;
     }
 }

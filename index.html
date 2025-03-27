@@ -9,31 +9,45 @@
 <body>
     <div class="container">
         <div class="resume">
-            <h1 contenteditable="true" data-placeholder="Введите ваше ФИО">Иван Иванов</h1>
-            <p class="description" contenteditable="true" data-placeholder="Краткое описание о вас">Веб-разработчик с опытом работы более 5 лет.</p>
+            <header class="resume-header">
+                <h1 contenteditable="true" data-placeholder="Введите ваше ФИО">Иван Иванов</h1>
+                <p class="description" contenteditable="true" data-placeholder="Краткое описание о вас">
+                    Веб-разработчик с опытом работы более 5 лет.
+                </p>
+            </header>
 
-            <h2>Контакты</h2>
-            <p contenteditable="true" data-placeholder="Введите ваш email">example@mail.com</p>
-            <p contenteditable="true" data-placeholder="Введите ваш телефон">+7 (123) 456-78-90</p>
+            <div class="resume-section">
+                <h2>Контакты 📞</h2>
+                <p contenteditable="true" data-placeholder="Введите ваш email">example@mail.com</p>
+                <p contenteditable="true" data-placeholder="Введите ваш телефон">+7 (123) 456-78-90</p>
+            </div>
 
-            <h2>Опыт работы</h2>
-            <p contenteditable="true" data-placeholder="Укажите ваш опыт работы">Компания XYZ (2019 - настоящее время)</p>
+            <div class="resume-section">
+                <h2>Опыт работы 💼</h2>
+                <p contenteditable="true" data-placeholder="Укажите ваш опыт работы">Компания XYZ (2019 - настоящее время)</p>
+            </div>
 
-            <h2>Образование</h2>
-            <p contenteditable="true" data-placeholder="Где вы учились">Университет ABC, факультет информационных технологий</p>
+            <div class="resume-section">
+                <h2>Образование 🎓</h2>
+                <p contenteditable="true" data-placeholder="Где вы учились">
+                    Университет ABC, факультет информационных технологий
+                </p>
+            </div>
 
-            <h2>Навыки</h2>
-            <ul>
-                <li contenteditable="true" data-placeholder="Введите навык">HTML, CSS, JavaScript</li>
-                <li contenteditable="true" data-placeholder="Введите навык">React, Vue.js</li>
-                <li contenteditable="true" data-placeholder="Введите навык">Node.js, Express</li>
-            </ul>
+            <div class="resume-section">
+                <h2>Навыки 🚀</h2>
+                <ul>
+                    <li contenteditable="true" data-placeholder="Введите навык">HTML, CSS, JavaScript</li>
+                    <li contenteditable="true" data-placeholder="Введите навык">React, Vue.js</li>
+                    <li contenteditable="true" data-placeholder="Введите навык">Node.js, Express</li>
+                </ul>
+            </div>
 
-            <button id="download-pdf">Скачать PDF</button>
+            <button id="download-pdf">📄 Скачать PDF</button>
         </div>
     </div>
 
-    <!-- Исправленный порядок подключения скриптов -->
+    <!-- Подключение jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
