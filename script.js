@@ -19,9 +19,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         element.addEventListener("blur", () => updatePlaceholder(element));
     });
 
-    // ======= Подключение шрифта Noto Sans для полной поддержки Unicode =======
+    // ======= Загрузка шрифта из локального файла =======
     async function loadFont() {
-        const response = await fetch("https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts/unhinted/NotoSans-Regular.ttf");
+        const response = await fetch("fonts/NotoSans-Regular.ttf"); // Загружаем локально
+        if (!response.ok) throw new Error("Ошибка загрузки шрифта");
         const fontData = await response.arrayBuffer();
         return btoa(String.fromCharCode(...new Uint8Array(fontData)));
     }
@@ -40,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 format: "a4"
             });
 
-            // Добавляем шрифт Noto Sans
+            // Подключаем локальный Noto Sans
             doc.addFileToVFS("NotoSans-Regular.ttf", fontBase64);
             doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
             doc.setFont("NotoSans");
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             let y = 20;
             const elements = document.querySelectorAll("h1, h2, p, li");
-
+            
             for (const element of elements) {
                 let fontSize = 12;
                 let fontStyle = "normal";
@@ -88,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     });
 
-    // ======= Эффект Ripples =======
+    // ======= Эффект Ripple =======
     document.querySelectorAll("button").forEach(button => {
         button.addEventListener("click", function (e) {
             const ripple = document.createElement("div");
