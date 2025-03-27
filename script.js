@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         element.addEventListener("blur", () => updatePlaceholder(element));
     });
 
-    // ======= Загрузка шрифта из локального файла =======
+    // ======= Загрузка шрифта для GitHub Pages =======
     async function loadFont() {
-        const response = await fetch("fonts/NotoSans-Regular.ttf"); // Загружаем локально
+        const response = await fetch("static/NotoSans-VariableFont_wdth,wght.ttf"); // Путь к шрифту
         if (!response.ok) throw new Error("Ошибка загрузки шрифта");
         const fontData = await response.arrayBuffer();
         return btoa(String.fromCharCode(...new Uint8Array(fontData)));
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 format: "a4"
             });
 
-            // Подключаем локальный Noto Sans
+            // Подключаем Noto Sans
             doc.addFileToVFS("NotoSans-Regular.ttf", fontBase64);
             doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
             doc.setFont("NotoSans");
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             let y = 20;
             const elements = document.querySelectorAll("h1, h2, p, li");
-            
+
             for (const element of elements) {
                 let fontSize = 12;
                 let fontStyle = "normal";
